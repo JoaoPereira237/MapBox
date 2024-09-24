@@ -1,22 +1,82 @@
-import { useRef, useEffect } from 'react'
-import mapboxgl from 'mapbox-gl'
-
+import React, { useEffect, useRef } from 'react';
+import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import './App.css';
 
-import './App.css'
-
-function App() {
-
-  const mapRef = useRef()
-  const mapContainerRef = useRef()
+const App = () => {
+  const mapContainerRef = useRef(null);
+  const mapRef = useRef(null);
 
   useEffect(() => {
-    mapboxgl.accessToken = 'pk.eyJ1IjoiODIyMDgxNiIsImEiOiJjbTFnZG5yZm0wMnUwMmxzaXltbGpkejQzIn0.-z9XH3aUAFvj6xR-qG-0sg'
-    
+    mapboxgl.accessToken = 'pk.eyJ1IjoiODIyMDgxNiIsImEiOiJjbTFnY2hibGEwMmJvMmpzZWo1dWdxZWwxIn0.a-VEhNNZ7ojZLTe1LrG73Q';
+
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
-      center: [-8.0, 39.5],
-      zoom: 6.12,
+      style: 'mapbox://styles/8220816/cm1ghkhu3002801pi22egfdr9', 
+      center: [-8.017, 41.14961], 
+      zoom: 5 
+    });
+
+    const geojson = {
+      type: 'FeatureCollection',
+      features: [
+        {
+          type: 'Feature',
+          properties: {
+            message: 'Foo',
+            imageId: 1011,
+            iconSize: [60, 60]
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [-8.61099, 41.14961]
+          }
+        },
+        {
+          type: 'Feature',
+          properties: {
+            message: 'Bar',
+            imageId: 870,
+            iconSize: [50, 50]
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [-8.61099, 39.14961]
+          }
+        },
+        {
+          type: 'Feature',
+          properties: {
+            message: 'Baz',
+            imageId: 837,
+            iconSize: [40, 40]
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [-8.61099, 38.14961]
+          }
+        }
+      ]
+    };
+
+    geojson.features.forEach((marker) => {
+      const el = document.createElement('div');
+      const [width, height] = marker.properties.iconSize;
+      el.className = 'marker';
+      el.style.backgroundImage = `url(https://picsum.photos/id/${marker.properties.imageId}/${width}/${height})`;
+      el.style.width = `${width}px`;
+      el.style.height = `${height}px`;
+      el.style.backgroundSize = '100%';
+      el.style.borderRadius = '50%';
+      el.style.cursor = 'pointer';
+
+      el.addEventListener('click', () => {
+        window.alert(marker.properties.message);
+      });
+
+      new mapboxgl.Marker(el)
+        .setLngLat(marker.geometry.coordinates)
+        .addTo(mapRef.current);
     });
 
     mapRef.current.addControl(
@@ -33,15 +93,11 @@ function App() {
     );
     
     return () => {
-      mapRef.current.remove()
-    }
-  }, [])
+      if (mapRef.current) mapRef.current.remove();
+    };
+  }, []);
 
-  return (
-    <>
-      <div id='map-container' ref={mapContainerRef}/>
-    </>
-  )
-}
+  return <div ref={mapContainerRef} id="map" style={{ height: '100vh', width: '100vw' }} />;
+};
 
-export default App
+export default App;

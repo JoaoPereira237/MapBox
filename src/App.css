@@ -35,3 +35,21 @@
   border-radius: 10px;
   cursor: pointer;
 }
+
+#map {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.marker {
+  width: 60px; /* largura padrão, pode ser alterada dinamicamente via JS */
+  height: 60px; /* altura padrão, pode ser alterada dinamicamente via JS */
+  border-radius: 50%; /* Formato circular */
+  border: 5px solid #FF5733; /* Cor e espessura da borda */
+  display: flex;
+  align-items: center; /* Centraliza a imagem dentro do círculo */
+  justify-content: center; /* Centraliza a imagem dentro do círculo */
+  background-size: cover; /* Garante que a imagem ocupe o espaço da div */
+  cursor: pointer; /* Aponta que é clicável */
+}
