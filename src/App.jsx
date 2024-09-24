@@ -6,14 +6,15 @@ import './App.css';
 const App = () => {
   const mapContainerRef = useRef(null);
   const mapRef = useRef(null);
+  const markersRef = useRef([]); 
 
   useEffect(() => {
     mapboxgl.accessToken = 'pk.eyJ1IjoiODIyMDgxNiIsImEiOiJjbTFnY2hibGEwMmJvMmpzZWo1dWdxZWwxIn0.a-VEhNNZ7ojZLTe1LrG73Q';
 
     mapRef.current = new mapboxgl.Map({
       container: mapContainerRef.current,
-      style: 'mapbox://styles/8220816/cm1ghkhu3002801pi22egfdr9', 
-      center: [-8.017, 41.14961], 
+      style: 'mapbox://styles/8220816/cm1ghkhu3002801pi22egfdr9',
+      center: [-8.017, 41.14961],
       zoom: 5 
     });
 
@@ -59,24 +60,44 @@ const App = () => {
       ]
     };
 
-    geojson.features.forEach((marker) => {
-      const el = document.createElement('div');
-      const [width, height] = marker.properties.iconSize;
-      el.className = 'marker';
-      el.style.backgroundImage = `url(https://picsum.photos/id/${marker.properties.imageId}/${width}/${height})`;
-      el.style.width = `${width}px`;
-      el.style.height = `${height}px`;
-      el.style.backgroundSize = '100%';
-      el.style.borderRadius = '50%';
-      el.style.cursor = 'pointer';
+    const addMarkers = () => {
+      geojson.features.forEach((marker, index) => {
+        const el = document.createElement('div');
+        const [width, height] = marker.properties.iconSize;
+        el.className = 'marker';
+        el.style.backgroundImage = `url(https://picsum.photos/id/${marker.properties.imageId}/${width}/${height})`;
+        el.style.width = `${width}px`;
+        el.style.height = `${height}px`;
+        el.style.backgroundSize = '100%';
+        el.style.borderRadius = '50%';
+        el.style.cursor = 'pointer';
 
-      el.addEventListener('click', () => {
-        window.alert(marker.properties.message);
+        el.addEventListener('click', () => {
+          window.alert(marker.properties.message);
+        });
+
+        const mapMarker = new mapboxgl.Marker(el)
+          .setLngLat(marker.geometry.coordinates);
+
+        markersRef.current.push(mapMarker);
       });
+    };
 
-      new mapboxgl.Marker(el)
-        .setLngLat(marker.geometry.coordinates)
-        .addTo(mapRef.current);
+    const showMarkersAtZoom = (zoomLevel) => {
+      markersRef.current.forEach((marker, index) => {
+        if (zoomLevel >= 15) {  
+          if (!marker._map) marker.addTo(mapRef.current);
+        } else {
+          if (marker._map) marker.remove();
+        }
+      });
+    };
+
+    addMarkers();
+
+    mapRef.current.on('zoom', () => {
+      const zoomLevel = mapRef.current.getZoom();
+      showMarkersAtZoom(zoomLevel);
     });
 
     mapRef.current.addControl(
@@ -91,9 +112,12 @@ const App = () => {
         }
       })
     );
-    
+
     return () => {
-      if (mapRef.current) mapRef.current.remove();
+      if (mapRef.current) {
+        markersRef.current.forEach((marker) => marker.remove());
+        mapRef.current.remove();
+      }
     };
   }, []);
 
