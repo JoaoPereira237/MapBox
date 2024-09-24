@@ -19,6 +19,19 @@ function App() {
       zoom: 6.12,
     });
 
+    mapRef.current.addControl(
+      new mapboxgl.GeolocateControl({
+        positionOptions: {
+          enableHighAccuracy: true
+        },
+        trackUserLocation: true,
+        showUserHeading: true,
+        fitBoundsOptions: {
+          maxZoom: 11 
+        }
+      })
+    );
+    
     return () => {
       mapRef.current.remove()
     }
