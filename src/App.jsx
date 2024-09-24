@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './App.css';
+import {geojson} from './icons';
 
 const App = () => {
   const mapContainerRef = useRef(null);
@@ -18,47 +19,7 @@ const App = () => {
       zoom: 5 
     });
 
-    const geojson = {
-      type: 'FeatureCollection',
-      features: [
-        {
-          type: 'Feature',
-          properties: {
-            message: 'Foo',
-            imageId: 1011,
-            iconSize: [60, 60]
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [-8.61099, 41.14961]
-          }
-        },
-        {
-          type: 'Feature',
-          properties: {
-            message: 'Bar',
-            imageId: 870,
-            iconSize: [50, 50]
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [-8.61099, 39.14961]
-          }
-        },
-        {
-          type: 'Feature',
-          properties: {
-            message: 'Baz',
-            imageId: 837,
-            iconSize: [40, 40]
-          },
-          geometry: {
-            type: 'Point',
-            coordinates: [-8.61099, 38.14961]
-          }
-        }
-      ]
-    };
+    
 
     const addMarkers = () => {
       geojson.features.forEach((marker, index) => {
@@ -73,8 +34,11 @@ const App = () => {
         el.style.cursor = 'pointer';
 
         el.addEventListener('click', () => {
-          window.alert(marker.properties.message);
-        });
+          const popup = new mapboxgl.Popup({ offset: 25 }) // Popup com offset para ficar acima do ícone
+          .setLngLat(marker.geometry.coordinates)
+          .setHTML(`<h3>${marker.properties.message}</h3><p>Image ID: ${marker.properties.imageId}</p>`)
+          .addTo(mapRef.current);
+       });
 
         const mapMarker = new mapboxgl.Marker(el)
           .setLngLat(marker.geometry.coordinates);
