@@ -4,7 +4,7 @@ export const geojson = {
     {
       type: 'Feature',
       properties: {
-        message: 'Foo',
+        message: 'Lisboa',
         imageId: 1011,
         iconSize: [60, 60]
       },
@@ -16,7 +16,7 @@ export const geojson = {
     {
       type: 'Feature',
       properties: {
-        message: 'Bar',
+        message: 'Porto',
         imageId: 870,
         iconSize: [50, 50]
       },
@@ -28,7 +28,7 @@ export const geojson = {
     {
       type: 'Feature',
       properties: {
-        message: 'Baz',
+        message: 'Faro',
         imageId: 837,
         iconSize: [40, 40]
       },

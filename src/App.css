@@ -41,5 +41,33 @@
   border-radius: 50%;
   cursor: pointer;
   padding: 0;
-  border: 5px solid green;
+  border: 5px solid white;
+}
+
+.search-bar {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.search-bar input {
+  border: none;
+  padding: 8px;
+  border-radius: 4px 0 0 4px;
+  outline: none;
+}
+
+.search-bar button {
+  border: none;
+  background: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+  outline: none;
 }
